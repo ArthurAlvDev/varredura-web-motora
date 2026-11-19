@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'none';">
+  <title>Varredura Motora — escrever e falar com um único acionador</title>
+  <meta name="description" content="Teclado web com varredura automática, anti-tremor e frases rápidas para quem escreve com um único acionador. Funciona no navegador, sem instalar e sem enviar dados.">
+  <meta property="og:title" content="Varredura Motora">
+  <meta property="og:description" content="Escreva e fale com um clique, um toque ou a barra de espaço. Varredura ajustável e filtro anti-tremor.">
+  <meta property="og:type" content="website">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%231a2f52'/%3E%3Crect x='7' y='9' width='6' height='6' rx='1.5' fill='%23fff'/%3E%3Crect x='16' y='9' width='6' height='6' rx='1.5' fill='%2381b4ff'/%3E%3Crect x='7' y='18' width='6' height='6' rx='1.5' fill='%2381b4ff'/%3E%3Crect x='16' y='18' width='6' height='6' rx='1.5' fill='%23fff'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="src/styles.css">
+  <script defer src="src/scan.js"></script>
+  <script defer src="src/tremor.js"></script>
+  <script defer src="src/phrases.js"></script>
+  <script defer src="src/store.js"></script>
+  <script defer src="src/app.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Ir para o conteúdo</a>
+
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo" aria-hidden="true">⌨️</span>
+      <div>
+        <h1>Varredura Motora</h1>
+        <p class="tagline">Escreva e fale com um único acionador — sem pressa e sem tremor atrapalhar</p>
+      </div>
+    </div>
+    <span class="privacy">100% local · nada é enviado</span>
+  </header>
+
+  <main id="main">
+    <section class="card" aria-labelledby="output-title">
+      <h2 id="output-title">1. Sua mensagem</h2>
+      <label for="output">Texto escrito</label>
+      <textarea id="output" rows="4" readonly aria-describedby="output-help" placeholder="O texto aparece aqui quando você aciona as letras."></textarea>
+      <p id="output-help" class="muted small">Este campo é somente leitura: o texto entra pela varredura ou pelos atalhos.</p>
+
+      <div class="row wrap">
+        <button type="button" id="btn-speak" class="primary">🔊 Falar</button>
+        <button type="button" id="btn-copy" class="ghost">Copiar</button>
+        <button type="button" id="btn-clear" class="ghost">Limpar</button>
+      </div>
+
+      <label class="toggle" for="sound">
+        <input type="checkbox" id="sound" checked>
+        <span>Som curto a cada passo (ajuda a acompanhar sem olhar)</span>
+      </label>
+
+      <p id="status" class="status" role="status" aria-live="polite" data-kind="info"></p>
+    </section>
+
+    <section class="card" aria-labelledby="scan-title">
+      <h2 id="scan-title">2. Teclado por varredura</h2>
+      <p class="muted">
+        A varredura destaca um grupo; ao acionar, destaca cada letra do grupo; ao acionar de novo, escreve.
+        Use <strong>Espaço</strong>, <strong>Enter</strong> ou o botão grande.
+      </p>
+
+      <div class="row wrap">
+        <button type="button" id="scan-toggle" class="primary big">▶ Iniciar varredura</button>
+        <button type="button" id="scan-activate" class="big activate">Acionar</button>
+        <button type="button" id="scan-back" class="ghost">Voltar etapa</button>
+        <button type="button" id="scan-reset" class="ghost">Reiniciar</button>
+      </div>
+
+      <div class="controls">
+        <div>
+          <label for="speed">Velocidade da varredura</label>
+          <input type="range" id="speed" min="400" max="4000" step="100" value="1500">
+          <output id="speed-out" for="speed">1,5 s</output>
+        </div>
+        <div>
+          <label for="mode">Modo</label>
+          <select id="mode">
+            <option value="auto" selected>Automático</option>
+            <option value="manual">Manual (só quando eu acionar)</option>
+          </select>
+        </div>
+      </div>
+
+      <p id="scan-now" class="scan-now" aria-live="polite">
+        Pronto para começar.
+      </p>
+
+      <div id="groups" class="groups"></div>
+
+      <p class="muted small">
+        Toque diretamente em uma letra para escrever sem esperar a varredura. Isso não substitui o acionador,
+        apenas oferece um caminho mais rápido quando a coordenação permite.
+      </p>
+    </section>
+
+    <section class="card" aria-labelledby="tremor-title">
+      <h2 id="tremor-title">3. Anti-tremor e permanência</h2>
+      <p class="muted">
+        A permanência (dwell) aciona o alvo quando o ponteiro fica parado sobre ele pelo tempo escolhido.
+        Movimentos menores que a tolerância são ignorados como tremor.
+      </p>
+
+      <label class="toggle" for="dwell-enabled">
+        <input type="checkbox" id="dwell-enabled">
+        <span>Ativar acionamento por permanência</span>
+      </label>
+
+      <div class="controls">
+        <div>
+          <label for="dwell">Tempo de permanência</label>
+          <input type="range" id="dwell" min="400" max="3000" step="100" value="1200">
+          <output id="dwell-out" for="dwell">1,2 s</output>
+        </div>
+        <div>
+          <label for="radius">Tolerância a tremor (pixels)</label>
+          <input type="range" id="radius" min="0" max="60" step="2" value="16">
+          <output id="radius-out" for="radius">16 px</output>
+        </div>
+      </div>
+
+      <p class="muted small">
+        A barra de progresso aparece no cartão em permanência. Para cancelar, mova o ponteiro para outro lugar.
+      </p>
+    </section>
+
+    <section class="card" aria-labelledby="phrases-title">
+      <h2 id="phrases-title">4. Frases rápidas</h2>
+      <p class="muted">Frases curtas entram no último grupo do teclado de varredura.</p>
+
+      <ul id="phrase-list" class="phrase-list"></ul>
+
+      <div class="row wrap">
+        <label class="sr-only" for="phrase-input">Nova frase</label>
+        <input type="text" id="phrase-input" maxlength="80" placeholder="Ex.: Quero ir para casa.">
+        <button type="button" id="btn-add-phrase" class="primary">Adicionar frase</button>
+        <button type="button" id="btn-reset-phrases" class="ghost">Restaurar padrão</button>
+      </div>
+    </section>
+
+    <section class="card prose" aria-labelledby="help-title">
+      <h2 id="help-title">Como usar</h2>
+      <ol>
+        <li>Clique em <strong>Iniciar varredura</strong>. Um grupo fica destacado de cada vez.</li>
+        <li>Quando o grupo certo estiver destacado, acione: <strong>Espaço</strong>, <strong>Enter</strong> ou o botão <strong>Acionar</strong>.</li>
+        <li>A varredura passa a destacar as letras daquele grupo. Acione de novo para escrever.</li>
+        <li>Use <strong>Voltar etapa</strong> para desfazer a escolha do grupo sem escrever nada.</li>
+        <li>Ajuste a velocidade até ficar confortável. Mais lento é melhor do que errar.</li>
+      </ol>
+      <p class="muted small">
+        O acionador pode ser um switch USB que emula a barra de espaço, um toque na tela ou um clique.
+        Nada é enviado para servidores: o texto fica apenas neste navegador.
+      </p>
+    </section>
+  </main>
+
+  <footer>
+    <p>Feito para quem escreve com um acionador, com o pé, a cabeça ou um toque.</p>
+    <p class="muted small">Made by OlacDev · <a href="https://olacdev.com/" rel="noopener">olacdev.com</a></p>
+  </footer>
+</body>
+</html>
