@@ -3,7 +3,11 @@
 **Arthur Alves Ferreira (Ferreira, A. A.)**
 OlacDev · <https://olacdev.com/>
 
-*Artigo técnico-científico — versão de trabalho (pré-print interno). Não publicado em repositório de dados. Sem DOI atribuído nesta versão.*
+**Versão:** 1.0 · **Data:** 19/11/2026
+**Licença do texto:** CC BY 4.0 · **Licença do software:** MIT
+**Tipo de recurso (Zenodo):** Preprint · **Idioma:** Português (Brasil)
+
+*Pré-print interno. Ainda não depositado em repositório de dados; ao publicar, substituir esta nota pelo DOI. A versão citável do software é o repositório público indicado nas referências.*
 
 ---
 
