@@ -25,7 +25,7 @@ test('tem estrutura semântica com um único h1 e link de salto', () => {
 test('todas as referências locais existem', () => {
   const refs = [...html.matchAll(/(?:href|src)="([^"#]+)"/g)]
     .map((m) => m[1])
-    .filter((r) => !/^https?:|^data:/.test(r));
+    .filter((r) => !/^https?:|^data:|^\/_vercel\//.test(r));
   assert.ok(refs.length >= 5);
   for (const ref of refs) assert.ok(fs.existsSync(path.join(root, ref)), `ausente: ${ref}`);
 });

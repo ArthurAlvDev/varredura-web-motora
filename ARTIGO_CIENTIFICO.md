@@ -69,9 +69,9 @@ O destaque do alvo usa borda de 3 px e halo, não apenas cor. O alvo tem no mín
 
 | Arquivo | Foco | Testes |
 | --- | --- | --- |
-| `scan.test.js` | transições, circularidade, grupos vazios, saltos, unicidade de ids | 16 |
+| `scan.test.js` | transições, circularidade, grupos vazios, saltos, unicidade de ids | 15 |
 | `tremor.test.js` | distância, filtro, estatísticas, progresso, dwell, limites | 15 |
-| `store.test.js` | frases, limites, normalização, versão, armazenamento bloqueado e corrompido | 18 |
+| `store.test.js` | frases, limites, normalização, versão, armazenamento bloqueado e corrompido | 19 |
 | `page.test.js` | integridade, ordem de scripts, rótulos, CSP, atalhos, fala, crédito | 15 |
 
 Resultado: **64 testes, 64 aprovados, 0 falhas**.
